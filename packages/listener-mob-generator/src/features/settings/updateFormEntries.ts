@@ -21,7 +21,7 @@ const updateFormEntries = async (forms: number[]): Promise<any> => {
       mutation: FORM_ENTRIES_MUTATION,
       variables: { forms }
     })
-  
+
     return formEntries
   } catch (err) {
 		console.error('failed on update form entries: '.red, err)
