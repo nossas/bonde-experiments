@@ -1,0 +1,64 @@
+pipeline:
+  # build:
+  #   image: node:12-alpine
+  #   commands:
+  #     - yarn global add pnpm
+  #     - pnpm i
+  #     - pnpm m test
+  #   when:
+  #     event: [push]
+
+  publish-stag-experiments-mob-generator:
+    image: plugins/docker
+    repo: nossas/bonde-experiments-mob-generator
+    group: publishing
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_BRANCH/\//-}
+    when:
+      status: success
+      branch: [feature/*, master]
+      event: push
+
+  publish-prod-experiments-mob-generator:
+    image: plugins/docker
+    repo: nossas/bonde-experiments-mob-generator
+    group: publishing
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_TAG##v}
+      - latest
+    when:
+      status: success
+      event: tag
+
+  deploy-stag-listener-experiments-mob-generator:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: listeners/mob-generator
+    group: deploying
+    docker_image: nossas/bonde-experiments-mob-generator:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [rancher_access_key, rancher_secret_key]
+    when:
+      status: success
+      branch: [feature/*, master]
+      event: push
+
+  deploy-prod-listener-experiments-mob-generator:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: listeners/mob-generator
+    docker_image: "nossas/bonde-experiments-mob-generator:${DRONE_TAG##v}"
+    timeout: 360
+    group: deploying
+    confirm: true
+    secrets:
+      - source: rancher_access_key_prod
+        target: rancher_access_key
+      - source: rancher_secret_key_prod
+        target: rancher_secret_key
+    when:
+      status: success
+      event: tag
