@@ -1,12 +1,12 @@
 pipeline:
-  # build:
-  #   image: node:12-alpine
-  #   commands:
-  #     - yarn global add pnpm
-  #     - pnpm i
-  #     - pnpm m test
-  #   when:
-  #     event: [push]
+  build:
+    image: node:12-alpine
+    commands:
+      - yarn global add pnpm
+      - pnpm i
+      - pnpm m run build
+    when:
+      event: [push]
 
   publish-stag-experiments-mob-generator:
     image: plugins/docker
