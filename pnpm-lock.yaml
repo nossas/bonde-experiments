@@ -20,6 +20,7 @@ importers:
       throng: 4.0.0
       tsc-watch: 4.2.3_typescript@3.7.5
       tslib: 1.10.0
+      underscore: 1.10.2
       ws: 7.2.5
     devDependencies:
       '@types/jest': 25.1.5
@@ -66,6 +67,7 @@ importers:
       tslib: ~1.10.0
       tsutils: ~3.17.0
       typescript: ~3.7.5
+      underscore: ^1.10.2
       ws: ^7.2.1
 lockfileVersion: 5.1
 packages:
@@ -4393,6 +4395,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+  /underscore/1.10.2:
+    dev: false
+    resolution:
+      integrity: sha512-N4P+Q/BuyuEKFJ43B9gYuOj4TQUHXX+j2FqguVOpjkssLUUrnJofCcBccJSCoeturDoZU6GorDTHSvUDlSQbTg==
   /union-value/1.0.1:
     dependencies:
       arr-union: 3.1.0

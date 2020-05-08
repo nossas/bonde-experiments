@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 import { client as GraphQLAPI } from "../../../graphql";
 import { createMobilizationWithTemplate } from './createMobilizationWithTemplate';
+// import { replaceVariablesFromTemplate } from './replaceVariablesFromTemplate'
 
 const MOBILIZATIONS_QUERY = gql`
 query mobilizationExists($mobilization_name:String, $custom_domain:String) {
@@ -12,20 +13,13 @@ query mobilizationExists($mobilization_name:String, $custom_domain:String) {
     id
     name
     custom_domain
-    blocks(order_by: {position: asc}) {
-      id
-      widgets(where: {kind:{_eq:"content"}}) {
-        id,
-        settings
-      }
-    }
   }
 }`;
 
 export const checkMobilizationExistence = async (element) => {
   const mobilization_name = element.institution_type + " " + element.institution_name;
-  const custom_domain = (typeof element.slug === undefined || element.slug === 'null' || element.slug.length === 0 ? slugify(mobilization_name) : element.slug) + ".semaulasemenem.org.br";
-
+  const custom_domain = (element.slug === undefined ? slugify(mobilization_name) : element.slug) + ".semaulasemenem.org.br";
+  // console.log(mobilization_name,custom_domain);
   const { data: { mobilizations } } = await GraphQLAPI.query({
     query: MOBILIZATIONS_QUERY,
     variables: { mobilization_name, custom_domain }
@@ -35,9 +29,8 @@ export const checkMobilizationExistence = async (element) => {
     isNew : false
   }
 
-  console.log(element, typeof mobilizations, mobilizations)
-
-  if (typeof mobilizations === undefined || mobilizations.length === 0) {
+  // console.log(element, mobilizations);
+  if (mobilizations.length === 0) {
     const mob = {
       "mobilization": {
         "name": mobilization_name,
@@ -49,12 +42,14 @@ export const checkMobilizationExistence = async (element) => {
     };
     refMobilization = await createMobilizationWithTemplate(mob)
     refMobilization.isNew = true;
+    // await replaceVariablesFromTemplate(refMobilization);
+    return refMobilization;
   } else {
-    refMobilization = Object.assign(refMobilization, mobilizations)
+    refMobilization = Object.assign(refMobilization, mobilizations[0])
+    return refMobilization;
   }
 
   // console.log(mobilizations);
-  return refMobilization;
 };
 
 function slugify(string) {

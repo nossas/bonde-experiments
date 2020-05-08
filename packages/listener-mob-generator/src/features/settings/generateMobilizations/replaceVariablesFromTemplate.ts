@@ -1,40 +1,88 @@
 import gql from "graphql-tag";
 import { client as GraphQLAPI } from "../../../graphql";
+import _ from 'underscore';
 
-// const WIDGETS_MUTATION = gql`
-// mutation update_widgets($forms: [Int!]) {
-//   update_widgets(
-//     _set: { settings: true }
-//     where: { id: { _in: $forms } }
-//   ) {
-//     returning {
-//       id
-//       updated_at
-//     }
-//   }
-// }`;
+const WIDGETS_MUTATION = gql`
+mutation saveWidget($widget_id:Int, $settings: String){
+  update_widgets(
+      _set: { settings: $settings }
+      where: { id: { _eq: $widget_id } }
+    ) {
+      returning {
+        id
+        updated_at
+      }
+    }
+}`;
 
 const WIDGETS_QUERY = gql`
 query widgetsFromMob($mobilization_id:Int) {
   mobilizations(where: {id: {_eq: $mobilization_id}}) {
-    id
-    name
     blocks(order_by: {position: asc}) {
-      id
-      widgets(where: {kind:{_eq:"content"}}) {
+      widgets {
         id,
-        settings
+        settings,
+        kind
       }
     }
   }
 }`;
 
-export const replaceVariablesFromTemplate = async (refMobilization) => {
-  const { data: { widgetsFromMob } } = await GraphQLAPI.query({
+export const replaceVariablesFromTemplate = async (element, refMobilization) => {
+  const { data: { mobilizations } } = await GraphQLAPI.query({
     query: WIDGETS_QUERY,
-    variables: { mobilization_id: refMobilization.id }
+    variables: { mobilization_id: Number(refMobilization.id) }
   })
 
-  console.log(widgetsFromMob)
-  return widgetsFromMob
+  _.templateSettings = {
+    interpolate: /\{\{(.+?)\}\}/g
+  };
+
+  // console.log(refMobilization, mobilizations)
+  mobilizations.forEach(m => {
+    m.blocks.forEach(b => {
+      b.widgets.forEach(async w => {
+        // console.log(w)
+        if (w.kind === 'content') {
+          const template = _.template(w.settings);
+          w.settings = template({
+            NOME_ATIVISTA: element.first_name,
+            SOBRENOME_ATIVISTA: element.last_name,
+            "TIPO_INSTITUIÇÃO": getInstitution(element.institution_type),
+            "NOME_INSTITUIÇÃO": element.institution_name
+          });
+        } else if (w.kind === 'pressure') {
+          const template = _.template(w.settings);
+          w.settings = template({
+            "LINK_MOBILIZATION": `https://${refMobilization.custom_domain}`
+          });
+        }
+        const { data: { update_widgets: { returning } } } = await GraphQLAPI.mutate({
+          mutation: WIDGETS_MUTATION,
+          variables: { widget_id: Number(w.id), settings: w.settings }
+        })
+        console.log(returning);
+
+      });
+    });
+  });
+  return mobilizations
+}
+
+const getInstitution = (institution_type) => {
+  switch (institution_type) {
+    case "Instituto":
+      return "do Instituto";
+    case "Centro Educacional":
+      return "do Centro Educacional";
+    case "Escola":
+      return "da Escola";
+    case "EJA":
+      return "do EJA";
+    case "Pré Vestibular":
+      return "do Pré Vestibular";
+
+    default:
+      return institution_type;
+  }
 }
