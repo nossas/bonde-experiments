@@ -4,25 +4,26 @@ import { createMobilizationWithTemplate } from './createMobilizationWithTemplate
 // import { replaceVariablesFromTemplate } from './replaceVariablesFromTemplate'
 
 const MOBILIZATIONS_QUERY = gql`
-query mobilizationExists($mobilization_name:String, $custom_domain:String) {
+query mobilizationExists($mobilization_name:String, $slug:String) {
   mobilizations(where: { _or: [
         {name: {_eq: $mobilization_name}},
-        {custom_domain: {_eq: $custom_domain}}
+        {slug: {_eq: $slug}}
       ]
   }) {
     id
     name
     custom_domain
+    slug
   }
 }`;
 
 export const checkMobilizationExistence = async (element) => {
   const mobilization_name = element.institution_type + " " + element.institution_name;
-  const custom_domain = (element.slug === undefined ? slugify(mobilization_name) : element.slug) + ".semaulasemenem.org.br";
+  // const custom_domain = (element.slug === undefined ? slugify(mobilization_name) : element.slug) + ".semaulasemenem.org.br";
   // console.log(mobilization_name,custom_domain);
   const { data: { mobilizations } } = await GraphQLAPI.query({
     query: MOBILIZATIONS_QUERY,
-    variables: { mobilization_name, custom_domain }
+    variables: { mobilization_name, slug: slugify(mobilization_name) }
   });
 
   let refMobilization: any = {
@@ -34,7 +35,8 @@ export const checkMobilizationExistence = async (element) => {
     const mob = {
       "mobilization": {
         "name": mobilization_name,
-        "custom_domain": custom_domain,
+        // "custom_domain": custom_domain,
+        "slug": slugify(mobilization_name),
         "goal": "Mobilização dos estudantes pelo adiamento do Enem.",
         "city": element.state,
         "community_id": process.env.COMMUNITY_ID || 1

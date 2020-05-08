@@ -8,7 +8,7 @@ const generateMobilizations = async (individuals: any): Promise<any> => {
 
       const refMobilization = await checkMobilizationExistence(element);
 
-    await replaceVariablesFromTemplate(element, refMobilization);
+      await replaceVariablesFromTemplate(element, refMobilization);
 
       await sendEmail({ form: element, mob: refMobilization })
     });

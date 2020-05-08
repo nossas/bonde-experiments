@@ -54,7 +54,7 @@ export const replaceVariablesFromTemplate = async (element, refMobilization) => 
         } else if (w.kind === 'pressure') {
           const template = _.template(w.settings);
           w.settings = template({
-            "LINK_MOBILIZATION": `https://${refMobilization.custom_domain}`
+            "LINK_MOBILIZATION": `http://www.${refMobilization.slug}.bonde.org`
           });
         }
         const { data: { update_widgets: { returning } } } = await GraphQLAPI.mutate({
