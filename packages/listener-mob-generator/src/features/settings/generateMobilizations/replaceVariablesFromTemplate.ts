@@ -79,6 +79,8 @@ const getInstitution = (institution_type) => {
       return "da Escola";
     case "EJA":
       return "do EJA";
+    case "Colégio":
+      return "do Colégio";
     case "Pré Vestibular":
       return "do Pré Vestibular";
 
