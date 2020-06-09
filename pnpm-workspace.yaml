@@ -1,2 +1,3 @@
 packages:
   - "packages/listener-mob-generator"
+  - "packages/zap-central-server"
