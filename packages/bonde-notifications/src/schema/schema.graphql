@@ -1,3 +1,22 @@
+
 type Query {
   helloWorld: String!
+}
+
+scalar JSON
+
+input NotifyInput {
+  email_from: String!
+  email_to: String!
+  subject: String!
+  body: String!
+  context: JSON
+}
+
+type StatusResponse {
+  status: String!
+}
+
+type Mutation {
+  notify(input: [NotifyInput!]!): StatusResponse!
 }
