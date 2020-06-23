@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let path = './core/mail';
+let path = './core/smtp';
 
 if (process.env.SENDGRID_API_KEY) {
   path = './core/sendgrid';

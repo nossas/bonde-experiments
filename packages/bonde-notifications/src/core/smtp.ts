@@ -31,4 +31,4 @@ export const send = async (message: any): Promise<void> => {
     //   console.error(body);
     // }
   }
-}
+};

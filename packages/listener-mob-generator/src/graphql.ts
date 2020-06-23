@@ -20,7 +20,7 @@ const authHeaders = process.env.JWT_TOKEN
 
 const httpLink = createHttpLink({
   uri: process.env.GRAPHQL_URL || "data.bonde.devel:3001/graphql",
-  fetch
+  fetch: fetch as any
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {

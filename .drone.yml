@@ -17,7 +17,7 @@ pipeline:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [feature/*, master]
+      branch: [feature/generator-*, master]
       event: push
   
   publish-stag-notifications-api:
@@ -55,7 +55,7 @@ pipeline:
     secrets: [rancher_access_key, rancher_secret_key]
     when:
       status: success
-      branch: [feature/*, master]
+      branch: [feature/generator-*, master]
       event: push
   
   deploy-stag-notifications-api:

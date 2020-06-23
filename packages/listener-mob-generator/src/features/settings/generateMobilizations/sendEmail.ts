@@ -43,7 +43,7 @@ export const sendEmail = async (element) => {
       user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || ''
     }
-  });
+  } as nodemailer.SendMailOptions);
 
   return await transporter.sendMail({
     from: '"Vitória do Nossas" <vitoria@nossas.org>',
