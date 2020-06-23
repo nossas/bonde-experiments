@@ -19,6 +19,18 @@ pipeline:
       status: success
       branch: [feature/*, master]
       event: push
+  
+  publish-stag-notifications-api:
+    image: plugins/docker
+    repo: nossas/bonde-notifications
+    group: publishing
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_BRANCH/\//-}
+    when:
+      status: success
+      branch: [feature/notify-*, master]
+      event: push
 
   publish-prod-experiments-mob-generator:
     image: plugins/docker
@@ -44,6 +56,20 @@ pipeline:
     when:
       status: success
       branch: [feature/*, master]
+      event: push
+  
+  deploy-stag-notifications-api:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: webhooks/notifications-api
+    group: deploying
+    docker_image: nossas/bonde-notifications:${DRONE_BRANCH/\//-}
+    timeout: 360
+    confirm: true
+    secrets: [rancher_access_key, rancher_secret_key]
+    when:
+      status: success
+      branch: [feature/notify-*, master]
       event: push
 
   deploy-prod-listener-experiments-mob-generator:
