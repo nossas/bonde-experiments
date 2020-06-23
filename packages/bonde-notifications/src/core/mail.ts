@@ -30,7 +30,7 @@ class Mail {
       to: email_to,
       from: email_from,
       subject: this.engine.renderString(subject, context),
-      text: this.engine.renderString(body, context)
+      html: this.engine.renderString(body, context)
     };
   }
 }

@@ -2,3 +2,4 @@ node_modules
 *debug*
 .env
 dist/
+packages/**/dist

@@ -1,7 +1,9 @@
 import { IResolvers } from 'graphql-tools';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { send } from './sendgrid';
-import Mail from './sendgrid/mail';
+// import { send } from './core/sendgrid';
+// import { send } from './core/smtp';
+// import Mail from './core/mail';
+import { notify } from './resolvers';
 
 const resolverMap: IResolvers = {
   // Query: {
@@ -10,15 +12,7 @@ const resolverMap: IResolvers = {
   //   }
   // },
   Mutation: {
-    notify: async (_: void, { input }: any): Promise<{ status: string }> => {
-      input.forEach(
-        async (settings: any) => {
-          const mail = new Mail(settings).json();
-          await send(mail);
-        }
-      );
-      return { status: 'successfully' };
-    }
+    notify
   },
   JSON: GraphQLJSONObject
 };
