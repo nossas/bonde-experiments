@@ -1,3 +1,4 @@
+import logger from '../logger';
 import mail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
@@ -23,15 +24,15 @@ export const send = async (message: any): Promise<void> => {
 
   try {
     const [response] = await mail.send(msg);
-    console.log(`Send email to ${msg.to} with status code ${response.statusCode}`);
+    logger.info(`Email sent to ${msg.to}`);
 
   } catch (error) {
-    console.log('err', error);
+    logger.error(error);
     if (error.response) {
       // const { message, code, response } = error;
       const { headers, body } = error.response;
       console.log('headers', { headers });
-      console.error(body);
+      logger.error(body);
     }
   }
 };

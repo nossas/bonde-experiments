@@ -18,5 +18,5 @@ type StatusResponse {
 }
 
 type Mutation {
-  notify(input: [NotifyInput!]!): StatusResponse!
+  notify(input: [NotifyInput!]!): StatusResponse
 }

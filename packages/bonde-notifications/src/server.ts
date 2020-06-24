@@ -4,20 +4,35 @@ import depthLimit from 'graphql-depth-limit';
 import { createServer } from 'http';
 import compression from 'compression';
 import cors from 'cors';
+import expressPino from 'express-pino-logger';
+import dotenv from 'dotenv';
 import schema from './schema';
+import logger from './logger';
+
+dotenv.config();
 
 const app = express();
 const server = new ApolloServer({
   schema,
   validationRules: [depthLimit(7)]
 });
+const expressLogger = expressPino({ logger });
 
 app.use('*', cors());
 app.use(compression());
+app.use(expressLogger);
+
 server.applyMiddleware({ app, path: '/graphql' });
 
 const httpServer = createServer(app);
 
-httpServer.listen({
-  port: 3000
-}, () => console.log('\n GraphQL is now running on http://localhost:3000/graphql'));
+const config = {
+  host: process.env.HOST || 'localhost',
+  port: process.env.PORT || 3000
+}
+
+httpServer.listen(
+  config,
+  () => logger.info(`GraphQL is now running on http://${config.host}:${config.port}/graphql`)
+);
+

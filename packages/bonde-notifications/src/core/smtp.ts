@@ -1,3 +1,4 @@
+import logger from '../logger';
 import { createTransport, SendMailOptions } from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -21,9 +22,9 @@ export const send = async (message: any): Promise<void> => {
 
   try {
     await mailer.sendMail(message);
-    console.log(`Send email to ${message.to} successfully.`);
+    logger.info(`Email sent to ${message.to}`);
   } catch (error) {
-    console.log('err', error);
+    logger.error(error);
     // if (error.response) {
     //   // const { message, code, response } = error;
     //   const { headers, body } = error.response;
