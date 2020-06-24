@@ -22,7 +22,6 @@ export const send = async (message: any): Promise<void> => {
 
   try {
     await mailer.sendMail(message);
-    logger.info(`Email sent to ${message.to}`);
   } catch (error) {
     logger.error(error);
     // if (error.response) {

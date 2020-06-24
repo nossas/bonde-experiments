@@ -12,14 +12,14 @@ if (process.env.SENDGRID_API_KEY) {
 
 logger.info(`Core snippet load on ${path}`);
 
-export const notify = async (_: void, { input }: any): Promise<{ status: string }> => {
-  logger.child(input).debug('Request notify mutation');
+export const notify = async (_: void, args: any): Promise<{ status: string }> => {
   const { send } = require(path);
 
-  input.forEach(async (settings: any) => {
+  args.input.forEach(async (settings: any) => {
     const mail = new Mail(settings).json();
     await send(mail);
   });
 
+  logger.child({ args }).info('Email sent to');
   return { status: 'ok' };
 };
