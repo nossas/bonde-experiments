@@ -1,0 +1,38 @@
+type Query {
+  activists_by_community: String!
+}
+
+scalar JSON
+
+input DonationInput {
+  payment_method: String!
+  amount: Int!
+  card_hash: String
+  customer: JSON
+  period: Int
+  checkout_data: JSON
+}
+
+input EmailPressureInput {
+  target: String!
+}
+
+input Action {
+  donation: DonationInput
+  email_pressure: EmailPressureInput
+}
+
+input ActivistInput {
+  first_name: String!
+  last_name: String
+  email: String!
+}
+
+type StatusResponse {
+  status: String!
+}
+
+type Mutation {
+  create_email_pressure(input: EmailPressureInput!, activist: ActivistInput!, widget_id: Int!): StatusResponse
+  create_donation(input: DonationInput!, activist: ActivistInput!, widget_id: Int!): StatusResponse
+}
