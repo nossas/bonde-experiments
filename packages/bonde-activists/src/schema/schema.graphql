@@ -23,9 +23,12 @@ input Action {
 }
 
 input ActivistInput {
-  first_name: String!
-  last_name: String
   email: String!
+  name: String!
+  first_name: String
+  last_name: String
+  phone: String
+  city: String
 }
 
 type StatusResponse {
