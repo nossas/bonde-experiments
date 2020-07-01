@@ -2,6 +2,7 @@ import { IResolvers } from 'graphql-tools';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import logger from './logger';
 import { BaseAction, IBaseAction } from './resolvers';
+import * as actions from './api/actions';
 import * as notifications from './api/notifications';
 
 const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<any> => {
@@ -15,14 +16,17 @@ const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<any> =>
       email_to: target
   }));
 
-  // TODO: send many mails to many targets?
   await notifications.send(mailInput);
   logger.child({ mailInput }).info('send pressure mail to targerts')
 
-  // TODO
-  // save pressure
+  const { id } = await actions.pressure({
+    activist_id: activist.id,
+    widget_id: widget.id,
+    cached_community_id: widget.block.mobilization.community_id
+  });
+  logger.child({ id }).info('save pressure on database');
 
-  return { status: 'ok' };
+  return { status: `OK ${id}` };
 }
 
 const resolverMap: IResolvers = {
