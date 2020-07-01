@@ -14,7 +14,7 @@ input DonationInput {
 }
 
 input EmailPressureInput {
-  target: String!
+  target: String
 }
 
 input Action {
@@ -36,6 +36,6 @@ type StatusResponse {
 }
 
 type Mutation {
-  create_email_pressure(input: EmailPressureInput!, activist: ActivistInput!, widget_id: Int!): StatusResponse
-  create_donation(input: DonationInput!, activist: ActivistInput!, widget_id: Int!): StatusResponse
+  create_email_pressure(widget_id: Int!, activist: ActivistInput!, input: EmailPressureInput): StatusResponse
+  create_donation(widget_id: Int!, activist: ActivistInput!, input: DonationInput!): StatusResponse
 }

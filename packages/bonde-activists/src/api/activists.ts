@@ -22,6 +22,7 @@ export const get_or_create = async (activist: Activist): Promise<any> => {
         ) {
           returning {
             id
+            name
             first_name
             last_name
             email
