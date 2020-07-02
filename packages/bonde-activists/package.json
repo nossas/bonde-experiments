@@ -12,12 +12,14 @@
     "@types/express-pino-logger": "^4.0.2",
     "@types/graphql": "^14.5.0",
     "@types/graphql-depth-limit": "^1.1.2",
+    "@types/jest": "^26.0.3",
     "@types/node": "^14.0.13",
     "@types/nunjucks": "^3.1.3",
     "@types/pino": "^6.3.0",
     "graphql-depth-limit": "^1.1.0",
     "graphql-import": "^1.0.2",
     "graphql-import-node": "^0.0.4",
+    "jest": "^26.1.0",
     "nodemon": "^2.0.4",
     "pino-pretty": "^4.0.0",
     "ts-node": "^8.10.2",
@@ -27,7 +29,8 @@
     "start": "node 'dist/server.js'",
     "build": "tsc -p . && ncp src/schema dist/schema",
     "dev": "LOG_LEVEL=debug NODE_ENV=development yarn run build:dev | ./node_modules/.bin/pino-pretty",
-    "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql"
+    "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql",
+    "test": "jest"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.6",
