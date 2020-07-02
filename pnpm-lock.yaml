@@ -40,6 +40,7 @@ importers:
       jest: 26.1.0
       nodemon: 2.0.4
       pino-pretty: 4.0.0
+      ts-jest: 26.1.1_jest@26.1.0+typescript@3.9.5
       ts-node: 8.10.2_typescript@3.9.5
       typescript: 3.9.5
     specifiers:
@@ -79,6 +80,7 @@ importers:
       nunjucks: ^3.2.1
       pino: ^6.3.2
       pino-pretty: ^4.0.0
+      ts-jest: ^26.1.1
       ts-node: ^8.10.2
       typescript: ^3.9.5
   packages/bonde-notifications:
@@ -6993,6 +6995,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
+  /mkdirp/1.0.4:
+    dev: true
+    engines:
+      node: '>=10'
+    hasBin: true
+    resolution:
+      integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
   /mri/1.1.4:
     dev: true
     engines:
@@ -8888,6 +8897,29 @@ packages:
       jest: '>=24 <25'
     resolution:
       integrity: sha512-HEGfrIEAZKfu1pkaxB9au17b1d9b56YZSqz5eCVE8mX68+5reOvlM93xGOzzCREIov9mdH7JBG+s0UyNAqr0tQ==
+  /ts-jest/26.1.1_jest@26.1.0+typescript@3.9.5:
+    dependencies:
+      bs-logger: 0.2.6
+      buffer-from: 1.1.1
+      fast-json-stable-stringify: 2.1.0
+      jest: 26.1.0
+      json5: 2.1.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      micromatch: 4.0.2
+      mkdirp: 1.0.4
+      semver: 7.3.2
+      typescript: 3.9.5
+      yargs-parser: 18.1.3
+    dev: true
+    engines:
+      node: '>= 10'
+    hasBin: true
+    peerDependencies:
+      jest: '>=26 <27'
+      typescript: '>=3.8 <4.0'
+    resolution:
+      integrity: sha512-Lk/357quLg5jJFyBQLnSbhycnB3FPe+e9i7ahxokyXxAYoB0q1pPmqxxRPYr4smJic1Rjcf7MXDBhZWgxlli0A==
   /ts-node/8.10.2_typescript@3.9.5:
     dependencies:
       arg: 4.1.3

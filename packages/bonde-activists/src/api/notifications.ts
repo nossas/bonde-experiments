@@ -9,14 +9,16 @@ interface NotifyInput {
   subject: string
 }
 
-export const send = async (input: NotifyInput): Promise<any> => {
-  const mutation = gql`
+export const queries = {
+  send: gql`
     mutation Notify($input: [NotifyInput!]!) {
       notify(input: $input) {
         status
       }
     }
-  `;
+  `
+}
 
-  await client.mutate({ mutation, variables: { input } });
+export const send = async (input: NotifyInput): Promise<any> => {
+  return await client.mutate({ mutation: queries.send, variables: { input } });
 }

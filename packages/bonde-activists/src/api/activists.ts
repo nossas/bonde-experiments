@@ -6,10 +6,12 @@ type Activist = {
   name: string
   first_name?: string
   last_name?: string
+  phone?: string
+  city?: string
 }
 
-export const get_or_create = async (activist: Activist): Promise<any> => {  
-  const mutation = gql`
+export const queries = {
+  get_or_create: gql`
     mutation CreateOrUpdateActivists (
       $activist: [activists_insert_input!]!
     ) {
@@ -29,9 +31,14 @@ export const get_or_create = async (activist: Activist): Promise<any> => {
           }
         }
     }
-  `;
-  
-  const { data }: any = await client.mutate({ mutation, variables: { activist }});
+  `
+}
+
+export const get_or_create = async (activist: Activist): Promise<any> => {   
+  const { data }: any = await client.mutate({
+    mutation: queries.get_or_create,
+    variables: { activist }
+  });
 
   return data.insert_activists.returning[0];
 }

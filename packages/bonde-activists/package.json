@@ -22,6 +22,7 @@
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
     "pino-pretty": "^4.0.0",
+    "ts-jest": "^26.1.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
@@ -30,7 +31,8 @@
     "build": "tsc -p . && ncp src/schema dist/schema",
     "dev": "LOG_LEVEL=debug NODE_ENV=development yarn run build:dev | ./node_modules/.bin/pino-pretty",
     "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.6",

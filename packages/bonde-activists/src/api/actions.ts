@@ -7,6 +7,18 @@ interface Pressure {
   widget_id: number
 }
 
+export const queries = {
+  pressure: gql`
+    mutation InsertActivistPressure($input: [activist_pressures_insert_input!]!) {
+      insert_activist_pressures(objects: $input) {
+        returning {
+          id
+        }
+      }
+    }
+  `
+}
+
 export const pressure = async (input: Pressure): Promise<any> => {
   const mutation = gql`
     mutation InsertActivistPressure($input: [activist_pressures_insert_input!]!) {
@@ -18,7 +30,7 @@ export const pressure = async (input: Pressure): Promise<any> => {
     }
   `;
 
-  const { data } = await client.mutate({ mutation, variables: { input } });
+  const { data } = await client.mutate({ mutation: queries.pressure, variables: { input } });
 
   return data.insert_activist_pressures.returning[0];
 }
