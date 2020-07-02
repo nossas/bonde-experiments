@@ -13,7 +13,7 @@ const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<any> =>
     body: pressure_body,
     subject: pressure_subject,
     email_from: `${activist.name} <${activist.email}>`,
-      email_to: target
+    email_to: target
   }));
 
   await notifications.send(mailInput);
