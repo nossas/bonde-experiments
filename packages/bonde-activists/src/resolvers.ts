@@ -4,48 +4,12 @@ import Mailchimp from './mailchimp';
 import * as activists from './api/activists';
 import * as widgets from './api/widgets';
 import * as notifications from './api/notifications';
-
-type Activist = {
-  id: number
-  name: string
-  email: string
-}
-
-type Community = {
-  id: number;
-  mailchimp_api_key: string
-  mailchimp_list_id: string
-}
-
-type Mobilization = {
-  id: number
-  community: Community
-}
-
-type Block = {
-  mobilization: Mobilization
-}
-
-type Widget = {
-  id: number
-  settings: any
-  kind: string
-  block: Block
-}
+import { Activist, ActivistInput, Widget } from './types';
 
 export interface IBaseAction<T> {
   action: T
   activist: Activist
   widget: Widget
-}
-
-type ActivistInput = {
-  email: string
-  name: string
-  first_name?: string
-  last_name?: string
-  phone?: string
-  city?: string
 }
 
 interface BaseActionArgs {
@@ -69,12 +33,8 @@ export const BaseAction =
       const data = await fn({ action: args.input, activist, widget });
 
       // Update Mailchimp after action
-      const { community } = widget.block.mobilization;
-      const mailchimp = new Mailchimp({
-        apiKey: community.mailchimp_api_key,
-        listId: community.mailchimp_list_id
-      });
-      mailchimp.subscribe(activist, widget);
+      const mailchimp = new Mailchimp({ activist, widget });
+      mailchimp.subscribe();
       
       const { email_subject, sender_email, sender_name, email_text } = widget.settings;
       await notifications.send({
