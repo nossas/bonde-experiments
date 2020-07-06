@@ -7,10 +7,15 @@ export const queries = {
       widgets(where: { id: { _eq: $widget_id } }) {
         id
         settings
+        kind
         block {
           mobilization {
             id
-            community_id
+            community {
+              id
+              mailchimp_api_key
+              mailchimp_list_id
+            }
           }
         }
       }

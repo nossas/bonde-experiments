@@ -65,7 +65,7 @@ describe('tests on api graphql', () => {
     const widgetReturned = {
       id: 2,
       settings: {},
-      block: { mobilization: { id: 1, community_id: 1 } }
+      block: { mobilization: { id: 1, community: { id: 1 } } }
     }
     const graphqQLResponse = { data: { widgets: [widgetReturned] } };
     mockClient.query.mockResolvedValue(graphqQLResponse as any);

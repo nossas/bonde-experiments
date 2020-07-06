@@ -1,5 +1,6 @@
 import { ApolloError } from 'apollo-server-express';
 import logger from './logger';
+import Mailchimp from './mailchimp';
 import * as activists from './api/activists';
 import * as widgets from './api/widgets';
 import * as notifications from './api/notifications';
@@ -10,9 +11,15 @@ type Activist = {
   email: string
 }
 
+type Community = {
+  id: number;
+  mailchimp_api_key: string
+  mailchimp_list_id: string
+}
+
 type Mobilization = {
   id: number
-  community_id: number
+  community: Community
 }
 
 type Block = {
@@ -22,6 +29,7 @@ type Block = {
 type Widget = {
   id: number
   settings: any
+  kind: string
   block: Block
 }
 
@@ -49,8 +57,6 @@ interface BaseActionArgs {
 export const BaseAction =
   (fn: (args: IBaseAction<any>) => Promise<any>) =>
     async (_: void, args: BaseActionArgs): Promise<any> => {
-      // TODO
-      // Update Mailchimp After Action
       const widget: Widget = await widgets.get(args.widget_id);
       logger.child({ widget }).info('select widget');
 
@@ -59,10 +65,18 @@ export const BaseAction =
       const activist: Activist = await activists.get_or_create(args.activist);
       logger.child({ activist }).info('create or update activist');
 
+      // Dispatch generic action
       const data = await fn({ action: args.input, activist, widget });
 
+      // Update Mailchimp after action
+      const { community } = widget.block.mobilization;
+      const mailchimp = new Mailchimp({
+        apiKey: community.mailchimp_api_key,
+        listId: community.mailchimp_list_id
+      });
+      mailchimp.subscribe(activist, widget);
+      
       const { email_subject, sender_email, sender_name, email_text } = widget.settings;
-
       await notifications.send({
         email_from: `${sender_name} <${sender_email}>`,
         email_to: `${activist.name} <${activist.email}>`,

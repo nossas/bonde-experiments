@@ -4,11 +4,6 @@ import * as notifications from './api/notifications';
 import * as widgets from './api/widgets';
 import { BaseAction } from './resolvers';
 
-/* jest.mock('./api/client', () => ({
-  mutation: jest.fn(),
-  query: jest.fn(),
-})); */
-
 jest.mock('./api/widgets', () => ({
   get: jest.fn(),
 }));
@@ -73,7 +68,7 @@ describe('tests to action resolvers', () => {
         sender_name: 'Mobilizer Name',
         sender_email: 'mobilizer@nossas.org'
       },
-      block: { mobilization: { id: 1, community_id: 1 } }
+      block: { mobilization: { id: 1, community: { id: 1 } } }
     };
     mockedWidgets.get.mockReturnValue(widget as any);
     

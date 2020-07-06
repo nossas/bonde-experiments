@@ -52,6 +52,7 @@
     "graphql-tools": "^6.0.10",
     "graphql-type-json": "^0.3.2",
     "http": "^0.0.1-security",
+    "mailchimp-api-v3": "^1.14.0",
     "ncp": "^2.0.0",
     "nunjucks": "^3.2.1",
     "pino": "^6.3.2"

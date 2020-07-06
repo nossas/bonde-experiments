@@ -22,7 +22,7 @@ const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<any> =>
   const { id } = await actions.pressure({
     activist_id: activist.id,
     widget_id: widget.id,
-    cached_community_id: widget.block.mobilization.community_id
+    cached_community_id: widget.block.mobilization.community.id
   });
   logger.child({ id }).info('save pressure on database');
 
