@@ -44,7 +44,7 @@ class Mailchimp {
       .digest('hex');
   }
 
-  subscribe (): Promise<any> {
+  async subscribe (): Promise<any> {
     const form = {
       "email_address": this.activist.email,
       "status": "subscribed",
@@ -57,18 +57,18 @@ class Mailchimp {
       },
       "tags": this.tags
     }
-    
-    return this.client.put({
-      path: `/lists/${this.listID}/members/${this.hash}`,
-      body: form
-    })
-    .then((response: any) => {
-      console.log('response', response);
-      return 'Teste'
-    })
-    .catch((err: any) => {
+
+    try {
+      const response = await this.client.put({
+        path: `/lists/${this.listID}/members/${this.hash}`,
+        body: form
+      });
+      return { updated_at: response.last_changed };
+    } catch (err) {
       console.log('err', err);
-    })
+      throw new Error('Subscribe Error');
+      
+    }
   }
 }
 

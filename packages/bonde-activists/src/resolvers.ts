@@ -30,13 +30,16 @@ export const BaseAction =
       logger.child({ activist }).info('create or update activist');
 
       // Dispatch generic action
-      const data = await fn({ action: args.input, activist, widget });
+      const [data, syncronize] = await fn({ action: args.input, activist, widget });
 
       // Update Mailchimp after action
       const mailchimp = new Mailchimp({ activist, widget });
-      mailchimp.subscribe();
       
+      await syncronize();
+      
+      // TODO: Update action with mailchimp_syncronized_at
       const { email_subject, sender_email, sender_name, email_text } = widget.settings;
+
       await notifications.send({
         email_from: `${sender_name} <${sender_email}>`,
         email_to: `${activist.name} <${activist.email}>`,
@@ -45,5 +48,5 @@ export const BaseAction =
       });
       logger.info('send greetings of post-action');
 
-      return data;
+      return { status: `OK ${data.id}!` };
     }
