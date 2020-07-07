@@ -23,6 +23,7 @@ importers:
       http: 0.0.1-security
       mailchimp-api-v3: 1.14.0
       ncp: 2.0.0
+      node-fetch: 2.6.0
       nunjucks: 3.2.1
       pino: 6.3.2
     devDependencies:
@@ -80,6 +81,7 @@ importers:
       jest: ^26.1.0
       mailchimp-api-v3: ^1.14.0
       ncp: ^2.0.0
+      node-fetch: ^2.6.0
       nodemon: ^2.0.4
       nunjucks: ^3.2.1
       pino: ^6.3.2
