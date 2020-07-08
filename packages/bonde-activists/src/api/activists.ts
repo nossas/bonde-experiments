@@ -1,14 +1,6 @@
 import gql from 'graphql-tag';
 import client from './client';
-
-type Activist = {
-  email: string
-  name: string
-  first_name?: string
-  last_name?: string
-  phone?: string
-  city?: string
-}
+import { ActivistInput, Activist } from '../types';
 
 export const queries = {
   get_or_create: gql`
@@ -28,13 +20,15 @@ export const queries = {
             first_name
             last_name
             email
+            city
+            phone
           }
         }
     }
   `
 }
 
-export const get_or_create = async (activist: Activist): Promise<any> => {   
+export const get_or_create = async (activist: ActivistInput): Promise<Activist> => {   
   const { data }: any = await client.mutate({
     mutation: queries.get_or_create,
     variables: { activist }

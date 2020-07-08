@@ -2,18 +2,18 @@ import MailchimpClient from 'mailchimp-api-v3';
 import crypto from 'crypto';
 import { Activist, Widget } from './types';
 
-interface MailchimpArgs {
-  activist: Activist;
-  widget: Widget;
+interface MailchimpArgs<T, U> {
+  activist: U;
+  widget: T;
 }
 
-class Mailchimp {
+class Mailchimp<T extends Widget, U extends Activist> {
   protected client: any;
   protected activist: any;
   protected widget: any;
   protected listID: string
 
-  constructor({ activist, widget }: MailchimpArgs) {  
+  constructor({ activist, widget }: MailchimpArgs<T, U>) {  
     const {
       mailchimp_api_key,
       mailchimp_list_id
@@ -45,18 +45,23 @@ class Mailchimp {
   }
 
   async subscribe (): Promise<any> {
-    const form = {
+    let form: any = {
       "email_address": this.activist.email,
       "status": "subscribed",
       "merge_fields": {
         "FNAME": this.activist.first_name || this.activist.name,
-        "LNAME": this.activist.last_name || this.activist.name,
-        // "ADDRESS": "",
-        // "PHONE": "",
-        // "BIRTHDAY": ""
+        "LNAME": this.activist.last_name || this.activist.name
       },
       "tags": this.tags
     }
+
+    if (this.activist.city) {
+      form.merge_fields['CITY'] = this.activist.city;
+    }
+    if (this.activist.phone) {
+      form.merge_fields['PHONE'] = this.activist.phone;
+    }
+    console.log('form', form);
 
     try {
       const response = await this.client.put({
@@ -68,6 +73,27 @@ class Mailchimp {
       console.log('err', err);
       throw new Error('Subscribe Error');
       
+    }
+  }
+
+  async merge_fields (): Promise<any> {
+    const form: any = {
+      tag: 'CITY',
+      name: 'City',
+      type: 'text',
+      required: false,
+      public: true
+    }
+    try {
+      const response = await this.client.post({
+        path: `/lists/${this.listID}/merge-fields`,
+        body: form
+      })
+      console.log('response', response);
+      return {}
+    } catch (err) {
+      console.log('err', err);
+      throw new Error('MergeFields Error');
     }
   }
 }

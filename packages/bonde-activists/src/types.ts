@@ -1,7 +1,11 @@
 export type Activist = {
   id: number
-  name: string
   email: string
+  name: string
+  first_name?: string
+  last_name?: string
+  phone?: string
+  city?: string
 }
 
 export type Community = {
