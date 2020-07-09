@@ -8,6 +8,18 @@ pipeline:
     when:
       event: [push]
 
+  unit-tests:
+    image: node:12-alpine
+    environment:
+      - SKIP_PREFLIGHT_CHECK=true
+    commands:
+      - apk --update add curl
+      - curl -L https://unpkg.com/@pnpm/self-installer | node
+      - pnpm m run test
+      - pnpm m run coverage
+    when:
+      event: [push]
+
   publish-stag-experiments-mob-generator:
     image: plugins/docker
     repo: nossas/bonde-experiments-mob-generator

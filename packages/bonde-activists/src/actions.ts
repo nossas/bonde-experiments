@@ -1,5 +1,5 @@
 // import logger from './logger';
-import { IBaseAction, IActionData } from './resolvers';
+import { IBaseAction, IActionData } from './types';
 import * as actions from './api/actions';
 import * as notifications from './api/notifications';
 
