@@ -2,7 +2,7 @@ import { IResolvers } from 'graphql-tools';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { pressure } from './actions';
 import { BaseAction } from './resolvers';
-import Mailchimp from './mailchimp';
+import mailchimp from './mailchimp';
 
 
 const update_mailchimp_settings = async (_: void, args: any): Promise<any> => {
@@ -14,10 +14,10 @@ const update_mailchimp_settings = async (_: void, args: any): Promise<any> => {
       }
     }
   };
-  const mailchimp = new Mailchimp<any, any>({ activist: {}, widget });
+  const { merge } = mailchimp<any, any>({ activist: {}, widget });
   
   try {
-    await mailchimp.merge_fields();
+    await merge();
     return { status: 'Ok!' };
   } catch (err) {
     console.log('err', err);
