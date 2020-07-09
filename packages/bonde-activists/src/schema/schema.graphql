@@ -31,12 +31,16 @@ input ActivistInput {
   city: String
 }
 
-type StatusResponse {
-  status: String!
+type Response {
+  data: JSON
+}
+
+type Status {
+  status: String
 }
 
 type Mutation {
-  create_email_pressure(widget_id: Int!, activist: ActivistInput!, input: EmailPressureInput): StatusResponse
-  create_donation(widget_id: Int!, activist: ActivistInput!, input: DonationInput!): StatusResponse
-  update_mailchimp_settings(api_key: String!, list_id: String!): StatusResponse
+  create_email_pressure(widget_id: Int!, activist: ActivistInput!, input: EmailPressureInput): Response
+  create_donation(widget_id: Int!, activist: ActivistInput!, input: DonationInput!): Response
+  update_mailchimp_settings(api_key: String!, list_id: String!): Status
 }

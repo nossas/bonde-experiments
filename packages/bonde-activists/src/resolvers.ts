@@ -18,42 +18,71 @@ interface BaseActionArgs {
   widget_id: number
 }
 
-export const BaseAction =
-  (fn: (args: IBaseAction<any>) => Promise<any>) =>
-    async (_: void, args: BaseActionArgs): Promise<any> => {
-      // Fetch Widget Settings
-      const widget: Widget = await widgets.get(args.widget_id);
-      logger.child({ widget }).info('select widget');
+interface IPreviousData {
+  activist: Activist
+  widget: Widget
+}
 
-      if (!widget) throw new ApolloError('Widget Not Found', 'widget_not_found');
+export interface IActionData {
+  data: any
+  syncronize: DoneAction
+}
 
-      // Create or Update Information about Activist on database
-      const activist: Activist = await activists.get_or_create(args.activist);
-      logger.child({ activist }).info('create or update activist');
+type DoneAction = () => Promise<any>;
 
-      // Dispatch the Action
-      const [data, syncronize] = await fn({ action: args.input, activist, widget });
+interface IResolverData {
+  data: any
+}
 
-      // Update Contact on Mailchimp
-      const mailchimp = new Mailchimp({ activist, widget });
-      mailchimp
-        .subscribe()
-        .then(syncronize)
-        .catch((err: any) => {
-          logger.child({ err }).error('BaseAction subscribe error');
-        });
+type Resolver = (_: void, args: BaseActionArgs) => Promise<IResolverData>;
+type Previous = (args: BaseActionArgs) => Promise<IPreviousData>;
+type Action = <T>(args: IBaseAction<T>) => Promise<IActionData>;
+type Next = <T>(args: IBaseAction<T>, done: DoneAction) => Promise<any>;
 
-      // Post-action
-      const { email_subject, sender_email, sender_name, email_text } = widget.settings;
+export const pipeline = <T extends any>(previous: Previous, action: Action, next: Next): Resolver => 
+  async (_: void, args: BaseActionArgs): Promise<IResolverData> => {
+    /** Resolver function base */
+    const { activist, widget } = await previous(args);
 
-      await notifications.send({
-        email_from: `${sender_name} <${sender_email}>`,
-        email_to: `${activist.name} <${activist.email}>`,
-        subject: email_subject,
-        body: email_text
-      });
-      logger.info('send greetings of post-action');
+    const opts = { action: args.input, activist, widget };
+    const { data, syncronize } = await action<T>(opts);
+    await next(opts, syncronize);
 
-      // TODO: Make a return model with more sense!
-      return { status: `OK ${data.id}!` };
-    }
+    return { data };
+  }
+;
+
+const _previous = async (args: BaseActionArgs): Promise<IPreviousData> => {
+  // Fetch Widget Settings
+  const widget: Widget = await widgets.get(args.widget_id);
+  // Throw Error Not Found
+  if (!widget) throw new ApolloError('Widget Not Found', 'widget_not_found');
+  // Create or Update Information about Activist on database
+  const activist: Activist = await activists.get_or_create(args.activist);
+
+  return { activist, widget };
+}
+
+const _next = async<T>({ activist, widget }: IBaseAction<T>, done: DoneAction): Promise<any> => {
+  // Update Contact on Mailchimp
+  const mailchimp = new Mailchimp({ activist, widget });
+  mailchimp.subscribe().then(done).catch((err: any) => {
+    logger.child({ err }).error('subscribe mailchimp');
+  });
+
+  // Post-action
+  const { email_subject, sender_email, sender_name, email_text } = widget.settings;
+
+  await notifications.send({
+    email_from: `${sender_name} <${sender_email}>`,
+    email_to: `${activist.name} <${activist.email}>`,
+    subject: email_subject,
+    body: email_text
+  });
+
+  logger.child({ activist, widget }).info('action is done');
+}
+
+export const BaseAction = <T>(fn: (args: IBaseAction<any>) => Promise<any>) =>
+  pipeline<T>(_previous, fn, _next)
+;
