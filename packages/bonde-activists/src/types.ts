@@ -46,7 +46,7 @@ export interface IBaseAction<T> {
 };
 
 export interface IBaseActionArgs {
-  input: any
+  input?: any
   activist: ActivistInput
   widget_id: number
 };

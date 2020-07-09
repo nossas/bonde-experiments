@@ -4,12 +4,6 @@ import * as notifications from '../api/notifications';
 import mailchimp from '../mailchimp';
 import next from './next';
 
-/**
- * Tests
- * - mailchimp subscribe success
- * - mailchimp subscribe error
- * - notifications send params
- */
 jest.mock('../api/notifications', () => ({
   send: jest.fn().mockResolvedValue({})
 }));
@@ -43,10 +37,10 @@ describe('next proccess on BaseAction mailchimp tests', () => {
         }
       },
       settings: {
-        email_subject: '',
-        sender_email: '',
-        sender_name: '',
-        email_text: ''
+        email_subject: 'Post Action Subject',
+        sender_email: 'mobilizer@test.org',
+        sender_name: 'Mobilizer',
+        email_text: 'Post Action Body'
       }
     }
   }
@@ -79,6 +73,23 @@ describe('next proccess on BaseAction mailchimp tests', () => {
         expect(syncronize).toBeCalledTimes(0);
         expect(mockedLogger.child).toBeCalledWith({ err: 'internal server error' });
         expect(mockedNotifications.send).toBeCalledTimes(1);
+      });
+  });
+
+  it('send notifications with widget.settings params for post-action', () => {
+    mockedMailchimp.mockReturnValue({
+      subscribe: jest.fn().mockResolvedValue({ updated_at: new Date().toISOString() }),
+      merge: jest.fn()
+    });
+    const syncronize = jest.fn();
+    return next(opts, syncronize)
+      .then(() => {
+        expect(notifications.send).toBeCalledWith({
+          email_from: `${opts.widget.settings.sender_name} <${opts.widget.settings.sender_email}>`,
+          email_to: `${opts.activist.name} <${opts.activist.email}>`,
+          subject: opts.widget.settings.email_subject,
+          body: opts.widget.settings.email_text
+        })
       });
   });
 });

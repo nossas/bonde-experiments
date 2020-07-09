@@ -100,4 +100,23 @@ describe('tests on api graphql', () => {
         expect(activist_pressure).toEqual({ id: 2 });
       });
   });
+
+  it('should actions.pressure_sync_done on api graphql', () => {
+    const input = {
+      id: 2,
+      sync_at: new Date().toISOString()
+    }
+    const graphqQLResponse = { data: { update_activist_pressures: { returning: [{ id: 2 }] } } };
+    mockClient.mutate.mockResolvedValue(graphqQLResponse as any);
+
+    return actions
+      .pressure_sync_done(input)
+      .then((activist_pressure: any) => {
+        expect(mockClient.mutate).toBeCalledWith({
+          mutation: actions.queries.pressure_sync_done,
+          variables: input
+        });
+        expect(activist_pressure).toEqual({ id: 2 });
+      })
+  });
 });

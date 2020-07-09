@@ -8,7 +8,6 @@ import {
   IPreviousData
 } from '../types';
 
-
 export default async (args: IBaseActionArgs): Promise<IPreviousData> => {
   // Fetch Widget Settings
   const widget: Widget = await widgets.get(args.widget_id);
