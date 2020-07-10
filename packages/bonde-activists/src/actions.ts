@@ -18,7 +18,7 @@ export const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<
   await notifications.send(mailInput);
   // logger.child({ mailInput }).info('send pressure mail to targerts')
 
-  const { id } = await actions.pressure({
+  const { id, created_at } = await actions.pressure({
     activist_id: activist.id,
     widget_id: widget.id,
     cached_community_id: widget.block.mobilization.community.id
@@ -27,6 +27,6 @@ export const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<
 
   return {
     data: { activist_pressure_id: id },
-    syncronize: async () => await actions.pressure_sync_done({ id, sync_at: new Date().toISOString() })
+    syncronize: async () => await actions.pressure_sync_done({ id, sync_at: created_at })
   };
-}
+};

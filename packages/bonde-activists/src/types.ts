@@ -8,6 +8,11 @@ export type Activist = {
   city?: string
 };
 
+export type ActivistPressure = {
+  id: number
+  created_at: string
+};
+
 export type Community = {
   id: number;
   mailchimp_api_key: string

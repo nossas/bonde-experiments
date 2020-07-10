@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { ActivistPressure } from '../types';
 import client from './client';
 
 interface Pressure {
@@ -13,6 +14,7 @@ export const queries = {
       insert_activist_pressures(objects: $input) {
         returning {
           id
+          created_at
         }
       }
     }
@@ -34,7 +36,7 @@ export const queries = {
   `
 };
 
-export const pressure = async (input: Pressure): Promise<any> => {
+export const pressure = async (input: Pressure): Promise<ActivistPressure> => {
   const { data } = await client.mutate({
     mutation: queries.pressure,
     variables: { input }
