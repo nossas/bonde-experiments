@@ -14,13 +14,14 @@ interface MailchimpResolve {
 
 export const tags = (widget: Widget) => {
   const { id, kind, block: { mobilization } } = widget;
+  const status = 'active';
   return [
     // TAG COMMUNITY
-    'C' + mobilization.community.id,
+    { name: 'C' + mobilization.community.id, status },
     // TAG MOBILIZATION
-    'M' + mobilization.id,
+    { name: 'M' + mobilization.id, status },
     // TAG WIDGET KIND
-    kind.toUpperCase().substring(0, 1) + '' + id
+    { name: kind.toUpperCase().substring(0, 1) + '' + id, status }
   ];
 };
 
@@ -50,8 +51,7 @@ export default <T extends Widget, U extends Activist>(args: MailchimpArgs<T, U>)
         "merge_fields": {
           "FNAME": activist.first_name || activist.name,
           "LNAME": activist.last_name || activist.name
-        },
-        "tags": tags(widget)
+        }
       }
 
       if (activist.city) {
@@ -62,7 +62,11 @@ export default <T extends Widget, U extends Activist>(args: MailchimpArgs<T, U>)
       }
 
       const path: string = `/lists/${listID}/members/${hash(activist.email)}`;
+      // Create or Update Member
       const response = await client.put({ path, body });
+      // Add tags
+      await client.post({ path: path + '/tags', body: { tags: tags(widget) } });
+
       return { updated_at: response.last_changed };
     },
     merge: async (): Promise<any> => {

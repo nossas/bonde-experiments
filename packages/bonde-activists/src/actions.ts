@@ -1,5 +1,5 @@
-// import logger from './logger';
-import { IBaseAction, IActionData } from './types';
+import logger from './logger';
+import { IBaseAction, IActionData, FormEntryInput } from './types';
 import * as actions from './api/actions';
 import * as notifications from './api/notifications';
 
@@ -28,5 +28,21 @@ export const pressure = async ({ widget, activist }: IBaseAction<any>): Promise<
   return {
     data: { activist_pressure_id: id },
     syncronize: async () => await actions.pressure_sync_done({ id, sync_at: created_at })
+  };
+};
+
+export const send_form = async ({ action, activist, widget }: IBaseAction<FormEntryInput>): Promise<IActionData> => {
+  const { id, created_at } = await actions.send_form({
+    activist_id: activist.id,
+    widget_id: widget.id,
+    cached_community_id: widget.block.mobilization.community.id,
+    fields: JSON.stringify(action?.fields || []),
+  });
+
+  logger.child({ id, created_at }).info('send_form');
+  
+  return {
+    data: { form_entry_id: id },
+    syncronize: async () => await actions.send_form_sync_done({ id, sync_at: created_at })
   };
 };

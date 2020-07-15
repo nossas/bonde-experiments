@@ -1,7 +1,8 @@
 import { IResolvers } from 'graphql-tools';
-import { GraphQLJSONObject } from 'graphql-type-json';
-import { pressure } from './actions';
+import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
+import { pressure, send_form } from './actions';
 import { BaseAction } from './resolvers';
+import { FormEntryInput } from './types';
 import mailchimp from './mailchimp';
 
 
@@ -23,7 +24,7 @@ const update_mailchimp_settings = async (_: void, args: any): Promise<any> => {
     console.log('err', err);
     throw new Error(err);
   }
-}
+};
 
 const resolverMap: IResolvers = {
   // Query: {
@@ -33,10 +34,11 @@ const resolverMap: IResolvers = {
   // },
   Mutation: {
     create_email_pressure: BaseAction(pressure),
-    create_donation: BaseAction(pressure),
+    create_form_entry: BaseAction<FormEntryInput>(send_form),
     update_mailchimp_settings
   },
-  JSON: GraphQLJSONObject
+  JSON: GraphQLJSON,
+  JSONObject: GraphQLJSONObject
 };
 
 export default resolverMap;

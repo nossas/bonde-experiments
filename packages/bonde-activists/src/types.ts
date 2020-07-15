@@ -44,6 +44,19 @@ export type ActivistInput = {
   city?: string
 };
 
+export type Field = {
+  uid: string
+  kind: string
+  label: string
+  placeholder: string
+  required: boolean
+  value: string
+};
+
+export type FormEntryInput = {
+  fields: Field[]
+}
+
 export interface IBaseAction<T> {
   action?: T
   activist: Activist

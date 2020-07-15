@@ -14,6 +14,7 @@ export default async <T>({ activist, widget }: IBaseAction<T>, done: DoneAction)
   // Post-action
   const { email_subject, sender_email, sender_name, email_text } = widget.settings;
 
+  // TODO: Required fields to Notify "Pós-Ação"
   await notifications.send({
     email_from: `${sender_name} <${sender_email}>`,
     email_to: `${activist.name} <${activist.email}>`,

@@ -38,6 +38,10 @@ describe('mailchimp function tests', () => {
     }
   }
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('hash function should be return a md5 of email with lower case', () => {
     const email = 'Activist@test.org';
     expect(hash(email)).toEqual(
@@ -51,9 +55,9 @@ describe('mailchimp function tests', () => {
   it('tags function should be return a COMMUNITY, MOBILIZATION and ACTION tags', () => {
     const { id, kind, block: { mobilization } } = widget;
     const expected = [
-      'C' + mobilization.community.id,
-      'M' + mobilization.id,
-      kind.toUpperCase().substring(0, 1) + '' + id
+      { name: 'C' + mobilization.community.id, status: 'active' },
+      { name: 'M' + mobilization.id, status: 'active' },
+      { name: kind.toUpperCase().substring(0, 1) + '' + id, status: 'active' }
     ];
 
     expect(tags(widget)).toEqual(expected);
@@ -76,8 +80,7 @@ describe('mailchimp function tests', () => {
         merge_fields: {
           FNAME: activistEntity.first_name,
           LNAME: activistEntity.last_name
-        },
-        tags: tags(widget)
+        }
       }
     };
     const { subscribe } = mailchimp({ widget, activist: activistEntity });
@@ -100,8 +103,7 @@ describe('mailchimp function tests', () => {
         merge_fields: {
           FNAME: activist.name,
           LNAME: activist.name
-        },
-        tags: tags(widget)
+        }
       }
     };
     const { subscribe } = mailchimp({ widget, activist });
@@ -131,8 +133,7 @@ describe('mailchimp function tests', () => {
           LNAME: activistEntity.name,
           CITY: activistEntity.city,
           PHONE: activistEntity.phone
-        },
-        tags: tags(widget)
+        }
       }
     };
     const { subscribe } = mailchimp({ widget, activist: activistEntity });
