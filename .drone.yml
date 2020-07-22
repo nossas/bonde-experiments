@@ -41,7 +41,7 @@ pipeline:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [feature/notify-*, master]
+      branch: [feature/*, hotfix/*, main]
       event: push
   
   publish-stag-activists-api:
@@ -53,8 +53,32 @@ pipeline:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [feature/activists-*, master]
+      branch: [feature/*, hotfix/*, main]
       event: push
+
+  publish-prod-notifications-api:
+    image: plugins/docker
+    repo: nossas/bonde-notifications
+    group: publishing
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_TAG##v}
+      - latest
+    when:
+      status: success
+      event: tag
+
+  publish-prod-activists-api:
+    image: plugins/docker
+    repo: nossas/bonde-activists
+    group: publishing
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_TAG##v}
+      - latest
+    when:
+      status: success
+      event: tag
 
   publish-prod-experiments-mob-generator:
     image: plugins/docker
@@ -85,7 +109,7 @@ pipeline:
   deploy-stag-notifications-api:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: webhooks/notifications-api
+    service: experiments/notifications
     group: deploying
     docker_image: nossas/bonde-notifications:${DRONE_BRANCH/\//-}
     timeout: 360
@@ -93,13 +117,13 @@ pipeline:
     secrets: [rancher_access_key, rancher_secret_key]
     when:
       status: success
-      branch: [feature/notify-*, master]
+      branch: [feature/*, hotfix/*, main]
       event: push
   
   deploy-stag-activists-api:
     image: peloton/drone-rancher
     url: http://cluster.bonde.org
-    service: webhooks/activists-api
+    service: experiments/activists
     group: deploying
     docker_image: nossas/bonde-activists:${DRONE_BRANCH/\//-}
     timeout: 360
@@ -107,8 +131,42 @@ pipeline:
     secrets: [rancher_access_key, rancher_secret_key]
     when:
       status: success
-      branch: [feature/activists-*, master]
+      branch: [feature/*, hotfix/*, main]
       event: push
+
+  deploy-prod-notifications-api:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: experiments/notifications
+    docker_image: "nossas/bonde-notifications:${DRONE_TAG##v}"
+    timeout: 360
+    group: deploying
+    confirm: true
+    secrets:
+      - source: rancher_access_key_prod
+        target: rancher_access_key
+      - source: rancher_secret_key_prod
+        target: rancher_secret_key
+    when:
+      status: success
+      event: tag
+
+  deploy-prod-activists-api:
+    image: peloton/drone-rancher
+    url: http://cluster.bonde.org
+    service: experiments/activists
+    docker_image: "nossas/bonde-activists:${DRONE_TAG##v}"
+    timeout: 360
+    group: deploying
+    confirm: true
+    secrets:
+      - source: rancher_access_key_prod
+        target: rancher_access_key
+      - source: rancher_secret_key_prod
+        target: rancher_secret_key
+    when:
+      status: success
+      event: tag
 
   deploy-prod-listener-experiments-mob-generator:
     image: peloton/drone-rancher
