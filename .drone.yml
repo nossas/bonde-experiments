@@ -126,3 +126,12 @@ pipeline:
     when:
       status: success
       event: tag
+
+  notify:
+    image: plugins/slack
+    channel: bonde_bots
+    username: CI - ${DRONE_REPO_NAME}
+    secrets: [ slack_webhook ]
+    when:
+      event: [ push, tag, build, publish, deployment, pull_request ]
+      status: [ success, failure ]
