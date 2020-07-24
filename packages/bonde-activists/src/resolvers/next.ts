@@ -15,12 +15,18 @@ export default async <T>({ activist, widget }: IBaseAction<T>, done: DoneAction)
   const { email_subject, sender_email, sender_name, email_text } = widget.settings;
 
   // TODO: Required fields to Notify "Pós-Ação"
-  await notifications.send({
-    email_from: `${sender_name} <${sender_email}>`,
+  const notifyOpts: any = {
+    email_from: widget.block.mobilization.community.email_template_from,
     email_to: `${activist.name} <${activist.email}>`,
     subject: email_subject,
     body: email_text
-  });
+  };
+
+  if (!!sender_name && !!sender_email) {
+    notifyOpts.email_from = `${sender_name} <${sender_email}>`;
+  };
+
+  await notifications.send(notifyOpts);
 
   logger.child({ activist, widget }).info('action is done');
 };

@@ -15,6 +15,7 @@ export const queries = {
               id
               mailchimp_api_key
               mailchimp_list_id
+              email_template_from
             }
           }
         }
