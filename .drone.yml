@@ -6,7 +6,7 @@ pipeline:
       - pnpm i
       - pnpm m run build
     when:
-      event: [push]
+      event: [push, tag]
 
   unit-tests:
     image: node:12-alpine
