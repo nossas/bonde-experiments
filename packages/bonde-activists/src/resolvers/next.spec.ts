@@ -63,6 +63,35 @@ describe('next proccess on BaseAction mailchimp tests', () => {
       });
   });
 
+  it('not call subscribe funcion without settings on community', () => {
+    mockedMailchimp.mockReturnValue({
+      subscribe: jest.fn().mockResolvedValue({ updated_at: new Date().toISOString() }),
+      merge: jest.fn()
+    });
+    const syncronize = jest.fn();
+    const newOpts = {
+      ...opts,
+      widget: {
+        ...opts.widget,
+        block: {
+          ...opts.widget.block,
+          mobilization: {
+            ...opts.widget.block.mobilization,
+            community: {
+              id: opts.widget.block.mobilization.community.id,
+              email_template_from: opts.widget.block.mobilization.community.email_template_from
+            }
+          }
+        }
+      }
+    };
+    return next(newOpts, syncronize)
+      .then(() => {
+        expect(syncronize).toBeCalledTimes(0);
+        expect(mockedNotifications.send).toBeCalledTimes(1);
+      });
+  });
+
   it('not done function on subscribe failed', () => {
     mockedMailchimp.mockReturnValue({
       subscribe: jest.fn().mockRejectedValue('internal server error'),

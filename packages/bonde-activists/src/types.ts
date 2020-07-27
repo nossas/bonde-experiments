@@ -15,8 +15,8 @@ export type ActivistPressure = {
 
 export type Community = {
   id: number
-  mailchimp_api_key: string
-  mailchimp_list_id: string
+  mailchimp_api_key?: string
+  mailchimp_list_id?: string
   email_template_from?: string
 };
 

@@ -39,7 +39,7 @@ export default <T extends Widget, U extends Activist>(args: MailchimpArgs<T, U>)
     mailchimp_list_id
   } = widget.block.mobilization.community;
 
-  const client = new Mailchimp(mailchimp_api_key);
+  const client = new Mailchimp(mailchimp_api_key || '');
   const listID = mailchimp_list_id;
 
   // Mailchimp Functions
