@@ -33,6 +33,9 @@ app.use(express.json({ limit: "200mb" })); //add the limit option so we can send
 app.use(express.static("public"));
 app.use(express.json());
 const PORT = 8082;
+app.listen(PORT, function () {
+    console.log(`\n• Listening on port ${PORT}!`);
+});
 
 ON_DEATH(async function (signal, err) {
   console.log("killing session");
@@ -91,9 +94,6 @@ ev.on("sessionDataBase64.**", async (sessionData, sessionId) => {
 async function start(client: Client) {
   app.use(client.middleware(true));
 
-  app.listen(PORT, function () {
-    console.log(`\n• Listening on port ${PORT}!`);
-  });
 
   globalClient = client;
   console.log("starting");
