@@ -8,7 +8,7 @@
     "start": "ts-node index.ts"
   },
   "dependencies": {
-    "@open-wa/wa-automate": "^1.9.65",
+    "@open-wa/wa-automate": "^3",
     "@types/node": "^14.0.12",
     "axios": "^0.19.2",
     "csv-stringify": "^5.5.0",
