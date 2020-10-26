@@ -52,7 +52,7 @@ ev.on("qr.**", async (qrcode, sessionId) => {
     "base64"
   );
   fs.writeFileSync(
-    `qr_code${sessionId ? "_" + sessionId : ""}.png`,
+    `./public/qr_code${sessionId ? "_" + sessionId : ""}.png`,
     imageBuffer
   );
 });
@@ -365,7 +365,9 @@ async function start(client: Client) {
 //   //   '--disk-cache-size=0'
 //   // ]
 // })
-create()
+create({
+    sessionId: 'zap-central-meu-rio'
+})
   .then(async (client) => await start(client))
   .catch((e) => {
     console.log("Error", e.message);
