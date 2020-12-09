@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "install": "pnpm i",
+    "start": "pnpm m run start",
+    "dev": "pnpm m run dev",
+    "test": "pnpm m run test"
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/nossas/bonde-experiments/issues"
   },
-  "homepage": "https://github.com/nossas/bonde-experiments#readme"
+  "homepage": "https://github.com/nossas/bonde-experiments#readme",
+  "dependencies": {
+    "pnpm": "^5.13.5"
+  }
 }

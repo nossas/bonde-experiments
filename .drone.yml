@@ -1,7 +1,8 @@
 pipeline:
   build:
-    image: node:12-alpine
+    image: node:10.20.1-slim@sha256:05d1d270480b6e99753076b6656bb5a37edb7ca31af20c008568a556bc82d2a8
     commands:
+      - apt-get update && apt-get install -y wget gnupg ca-certificates && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && apt-get update && apt-get install -y google-chrome-stable && rm -rf /var/lib/apt/lists/* && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/main/wait-for-it.sh -O /usr/sbin/wait-for-it.sh && chmod +x /usr/sbin/wait-for-it.sh
       - yarn global add pnpm
       - pnpm i
       - pnpm m run build
@@ -29,19 +30,31 @@ pipeline:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [feature/generator-*, master]
+      branch: [feature/mob-generator-*, main]
       event: push
   
   publish-stag-notifications-api:
     image: plugins/docker
     repo: nossas/bonde-notifications
+    secrets: [docker_username, docker_password]
+    group: publishing
+    tags:
+      - ${DRONE_BRANCH/\//-}
+    when:
+      status: success
+      event: push
+      branch: [feature/*, hotfix/*, main]
+
+  publish-stag-experiments-zap-central-server:
+    image: plugins/docker
+    repo: nossas/bonde-experiments-zap-central-server
     group: publishing
     secrets: [docker_username, docker_password]
     tags:
       - ${DRONE_BRANCH/\//-}
     when:
       status: success
-      branch: [feature/*, hotfix/*, main]
+      branch: [feature/zap-central-*, main]
       event: push
   
   publish-stag-activists-api:
@@ -103,7 +116,7 @@ pipeline:
     secrets: [rancher_access_key, rancher_secret_key]
     when:
       status: success
-      branch: [feature/generator-*, master]
+      branch: [feature/generator-*, main]
       event: push
   
   deploy-stag-notifications-api:

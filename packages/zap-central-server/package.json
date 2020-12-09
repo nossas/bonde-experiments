@@ -1,0 +1,21 @@
+{
+  "name": "zap-central-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lucas Pirola",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "@open-wa/wa-automate": "^3",
+    "@types/node": "^14.0.12",
+    "axios": "^0.19.2",
+    "csv-stringify": "^5.5.0",
+    "death": "^1.1.0",
+    "express": "^4.17.1",
+    "p-queue": "^6.4.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}
