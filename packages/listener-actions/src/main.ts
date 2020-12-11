@@ -1,36 +1,45 @@
-/**
- * Some predefined delays (in milliseconds).
- */
-export enum Delays {
-  Short = 500,
-  Medium = 2000,
-  Long = 5000,
+import * as throng from "throng";
+import subscriptionFormEntries from "./subscriptionFormEntries";
+
+throng({ master, worker, count: 4 })
+
+// This will only be called once
+function master() {
+  console.log('Started master')
+
+  async () => {
+    try {
+      console.log(
+        `Call subscriptions to form_entries... ${Number(process.env.WIDGET_ID) || 1}`
+      );
+      await subscriptionFormEntries([{
+        id: Number(process.env.WIDGET_ID) || 1,
+        metadata: JSON.parse(process.env.WIDGET_METADATA || "{}")
+      }]);
+    } catch (err) {
+      console.error("throng err: ", err);
+    }
+  }
+
+  process.on('beforeExit', () => {
+    console.log('Master cleanup.')
+  })
 }
 
-/**
- * Returns a Promise<string> that resolves after given time.
- *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - Number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
- */
-function delayedHello(
-  name: string,
-  delay: number = Delays.Medium,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
+// This will be called four times
+function worker(id) {
+  let exited = false
+
+  console.log(`Started worker ${ id }`)
+    process.on('SIGTERM', shutdown)
+    process.on('SIGINT', shutdown)
+
+    async function shutdown() {
+      if (exited) return
+      exited = true
+
+      await new Promise(r => setTimeout(r, 300))  // simulate async cleanup work
+      console.log(`Worker ${ id } cleanup done.`)
+      // disconnect()
+    }
 }
-
-
-
-// Below are examples of using ESLint errors suppression
-// Here it is suppressing missing return type definitions for greeter function
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function greeter(name: string) {
-  return await delayedHello(name, Delays.Long);
-}
-
-greeter("").then((v) => console.log(v));
