@@ -1,5 +1,6 @@
 packages:
   - "packages/listener-mob-generator"
-  - "packages/bonde-notifications"
-  - "packages/bonde-activists"
+  - "packages/listener-actions"
+  # - "packages/bonde-notifications"
+  # - "packages/bonde-activists"
   - "packages/zap-central-server"

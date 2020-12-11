@@ -4,25 +4,25 @@ import {
   create,
   Client,
   ev,
-  smartUserAgent,
-  NotificationLanguage,
+  // smartUserAgent,
+  // NotificationLanguage,
   Chat,
 } from "@open-wa/wa-automate";
 import * as stringify from "csv-stringify";
-import axios from "axios";
+// import axios from "axios";
 // import { default as PQueue } from 'p-queue';
-import * as express from "express";
+// import * as express from "express";
 
 // import { create, Client } from '@open-wa/wa-automate';
 // import { create, Client } from '../src/index';
 // const wa = require('../dist/index');
 // var create = require("@open-wa/wa-automate").create;
 // import { create, Client, decryptMedia, ev } from '../dist/index';
-const mime = require("mime-types");
-const uaOverride =
-  "WhatsApp/2.16.352 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15";
-const tosBlockGuaranteed =
-  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/79.0.3945.88 Safari/537.36";
+// const mime = require("mime-types");
+// const uaOverride =
+//   "WhatsApp/2.16.352 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15";
+// const tosBlockGuaranteed =
+  // "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/79.0.3945.88 Safari/537.36";
 const ON_DEATH = require("death");
 let globalClient: Client;
 const express = require("express");
@@ -37,7 +37,7 @@ app.listen(PORT, function () {
     console.log(`\n• Listening on port ${PORT}!`);
 });
 
-ON_DEATH(async function (signal, err) {
+ON_DEATH(async function () {
   console.log("killing session");
   if (globalClient) await globalClient.kill();
 });
@@ -120,6 +120,7 @@ async function start(client: Client) {
   // }
 
   app.get("/download-contacts", async (req, res) => {
+    console.log(req);
     const dataToWrite: string[][] = [];
     const headers: string[] = [
       "Name",

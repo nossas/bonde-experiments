@@ -5,7 +5,8 @@
   "author": "Lucas Pirola",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node index.ts",
+    "dev": "ts-node index.ts"
   },
   "dependencies": {
     "@open-wa/wa-automate": "^3",

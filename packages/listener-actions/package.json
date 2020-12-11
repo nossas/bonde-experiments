@@ -9,7 +9,7 @@
     "start": "node build/src/main.js",
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
-    "build:watch": "tsc-watch -p tsconfig.release.json --onSuccess \"npm start\"",
+    "dev": "tsc-watch -p tsconfig.release.json --onSuccess \"npm start\"",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
