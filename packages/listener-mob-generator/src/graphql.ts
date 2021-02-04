@@ -19,7 +19,7 @@ const authHeaders = process.env.JWT_TOKEN
   : { "x-hasura-admin-secret": process.env.HASURA_SECRET };
 
 const httpLink = createHttpLink({
-  uri: process.env.GRAPHQL_URL || "data.bonde.devel:3001/graphql",
+  uri: process.env.GRAPHQL_URL || "http://api-graphql-deprecated.bonde.devel/graphql",
   fetch: fetch as any
 });
 
@@ -30,7 +30,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
-  uri: process.env.WS_GRAPHQL_URL || "ws://localhost:5007/v1/graphql",
+  uri: process.env.WS_GRAPHQL_URL || "ws://api-graphql:8080/v1/graphql",
   options: {
     reconnect: true,
     connectionParams: { headers: authHeaders }
